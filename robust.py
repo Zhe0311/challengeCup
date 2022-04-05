@@ -1,3 +1,5 @@
+from error_location import get_error_index_list
+
 def get_potential_errors(filename: str) -> dict:
     """get the list of potential errors"""
     with open(filename) as f:
@@ -18,26 +20,22 @@ def get_common_prefix(label1: str, label2: str) -> str:
 def error_correct(labels: list, old_error_index: list, prefix_len_th: int) -> list:
     """get rid of the index that maight be right but we think it's wrong"""
     potential_errors = get_potential_errors("potentialErrors.txt")
-    new_error_index = []
     for error_index in old_error_index:
 
         # ignore the first label and last label
         if error_index == 0 or error_index == len(labels)-1:
-            new_error_index.append(error_index)
             continue
         
         # if there is no common prefix or not long enough
         common_prefix = get_common_prefix(labels[error_index-1], labels[error_index+1])
         if len(common_prefix) == 0 or len(common_prefix) < prefix_len_th:
-            new_error_index.append(error_index)
             continue
         
         error_label = labels[error_index]
         for i in range(len(common_prefix)):
-            if (error_label[i] != common_prefix[i]) and (error_label[i] not in potential_errors[common_prefix[i]]):
-                new_error_index.append(error_index)
-                break
-    return new_error_index
+            if (error_label[i] != common_prefix[i]) and (error_label[i] in potential_errors[common_prefix[i]]):
+                labels[error_index] = labels[error_index][0:i] + common_prefix[i] + labels[error_index][i+1:]
+    return get_error_index_list(labels)
 
 if __name__ == "__main__":
     labels = ["ADCDEFG", "ABCDEFF", "ABCDBFG", "ABCDEHJ", "ABCDEFF"]
