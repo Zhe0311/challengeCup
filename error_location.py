@@ -1,4 +1,5 @@
 from src_booklabel import compare_label, order_judge
+import cv2
 
 def inversion_number(labels :list) -> int:
     """calculate the inversion number of label list"""
@@ -43,6 +44,14 @@ def get_error_index_list(labels :list) -> list:
     
     return error_index
         
+# def draw_err_books(err_indexs: list, position_info: list, pic, thickness=3, spacing=10):
+#     img = img.copy()
+#     for err_index in err_indexs:
+#         for region in position_info[err_index]['text_region']:
+#             img = cv2.rectangle(img, (region[3][0], region[3][1]), (region[1][0], region[1][1]), color=(0, 0, 255), thickness=thickness)
+#             cv2.putText(img,label,(cmin,rmax),cv2.FONT_HERSHEY_COMPLEX, 1.0, (255,255, 0), 2)   
+#     return img
+
 
 
 if __name__ == "__main__":
